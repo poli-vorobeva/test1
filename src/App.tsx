@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {Box, FormControl, SelectChangeEvent} from "@mui/material";
-import SelectElement from "./SelectElement";
-import {DatePicker, TimePicker} from "@mui/x-date-pickers";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import React, {useEffect, useState} from 'react';
+import {Box, SelectChangeEvent} from "@mui/material";
+import TimeElement from "./TimeElement";
+import DateElement from "./DateElement";
+import SelectSections from "./SelectSections";
+import Buttons from "./Buttons";
 
 export interface ISelectData {
 	label: string,
@@ -18,7 +18,41 @@ const App = () => {
 	const [tower, setTower] = useState<string>(null)
 	const [floor, setFloor] = useState<string>(null)
 	const [room, setRoom] = useState<string>(null)
-
+	const [date, setDate] = useState(null)
+	const [beginTime, setBeginTime] = useState<string>(null)
+	const [endTime, setEndTime] = useState(null)
+	const [activeButton, onActiveButton] = useState('')
+	const cleanData = () => {
+		setTower(null)
+		setFloor(null)
+		setRoom(null)
+		setDate(null)
+		setBeginTime(null)
+		setEndTime(null)
+		onActiveButton(null)
+	}
+	useEffect(() => {
+		if (activeButton === 'submit') {
+			if (floor && room && tower && date && beginTime && endTime) {
+				console.log(JSON.stringify({
+					floor, room, tower, date,
+					time: {
+						beginTime: {
+							hour: beginTime.split('/')[0],
+							minute: beginTime.split('/')[1]
+						},
+						endTime: {
+							hour: endTime.split('/')[0],
+							minute: endTime.split('/')[1]
+						}
+					}
+				}))
+				cleanData()
+			}
+		} else if (activeButton === 'cancel') {
+			cleanData()
+		}
+	}, [activeButton])
 	const selectData: ISelectData[] = [
 		{
 			label: 'Tower',
@@ -45,36 +79,17 @@ const App = () => {
 			options: [1, 10],
 		},
 	]
-	const [date, setDate] = useState(null)
 	return (
-		<form style={{padding:'20px'}}>
-			<fieldset style={{border:'1px solid gray'}}>
+		<form style={{padding: '20px'}}>
+			<fieldset style={{border: '1px solid gray'}}>
 				<legend>Форма бронирования переговорной</legend>
 				<Box>
-					<FormControl fullWidth>
-						{
-							selectData.map(select => {
-								return <fieldset>
-									<legend>{select.legend}</legend>
-									<SelectElement key={select.label} selectData={select}/>
-								</fieldset>
-							})
-						}
-					</FormControl>
-					<fieldset style={{display: 'flex', alignItems: 'center'}}>
-						<legend>Выберете диапозон времени</legend>
-						<TimePicker label="Basic time picker"/>
-						<Typography sx={{margin: '0 20px'}}>-</Typography>
-						<TimePicker label="Basic time picker"/>
-					</fieldset>
-					<fieldset style={{display: 'inline'}}>
-						<legend>Выберете дату</legend>
-						<DatePicker onChange={(newValue) => setDate(newValue)}/>
-					</fieldset>
+					<SelectSections selectData={selectData}/>
+					<TimeElement begin={!!beginTime} end={!!endTime} onBegin={setBeginTime} onEnd={setEndTime}/>
+					<DateElement date={!!date} onDate={setDate}/>
 				</Box>
-				<Button sx={{marginTop: '20px'}} size="large" variant="outlined"> Готово </Button>
-
 			</fieldset>
+			<Buttons onPress={onActiveButton}/>
 		</form>
 	);
 };

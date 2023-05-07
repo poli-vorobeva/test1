@@ -15,10 +15,13 @@ const SelectElement = ({selectData}:ISelectProps) => {
 			rangeArray.push(selectData.options[0] as number + i)
 		}
 	}
+	//todo check start and end
 	return (
 		<FormControl fullWidth>
 		<InputLabel id={selectData.label}>{selectData.label}</InputLabel>
 	<Select
+		sx={{border: !selectData.value && '1px solid red'}}
+		defaultValue={selectData.value||''}
 		labelId={selectData.label}
 		value={selectData.value||''}
 		onChange={selectData.handler}
