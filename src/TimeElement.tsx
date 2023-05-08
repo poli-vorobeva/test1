@@ -10,11 +10,12 @@ const TimeElement = ({begin, end, onBegin, onEnd}: { begin: boolean, end: boolea
 		<fieldset style={{display: 'flex', alignItems: 'center'}}>
 			<legend>Выберете диапозон времени</legend>
 			<TimePicker sx={{border: !begin && '1px solid red'}}
+									value={!begin && null}
 									onChange={(value: Dayjs) => {
 										onBegin(`${value.hour()}/${value.minute()}`)
 									}} label="Basic time picker"/>
 			<Typography sx={{margin: '0 20px'}}>-</Typography>
-			<TimePicker sx={{border: !end && '1px solid red'}}
+			<TimePicker value={!end && null} sx={{border: !end && '1px solid red'}}
 									onChange={(value: Dayjs) => onEnd(`${value.hour()}/${value.minute()}`)} label="Basic time picker"/>
 		</fieldset>
 	);

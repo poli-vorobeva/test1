@@ -4,6 +4,7 @@ import TimeElement from "./TimeElement";
 import DateElement from "./DateElement";
 import SelectSections from "./SelectSections";
 import Buttons from "./Buttons";
+import Textarea from '@mui/joy/Textarea';
 
 export interface ISelectData {
 	label: string,
@@ -21,6 +22,7 @@ const App = () => {
 	const [date, setDate] = useState(null)
 	const [beginTime, setBeginTime] = useState<string>(null)
 	const [endTime, setEndTime] = useState(null)
+	const [textArea,setTextArea]=useState('')
 	const [activeButton, onActiveButton] = useState('')
 	const cleanData = () => {
 		setTower(null)
@@ -29,6 +31,7 @@ const App = () => {
 		setDate(null)
 		setBeginTime(null)
 		setEndTime(null)
+		setTextArea('')
 		onActiveButton(null)
 	}
 	useEffect(() => {
@@ -44,7 +47,8 @@ const App = () => {
 						endTime: {
 							hour: endTime.split('/')[0],
 							minute: endTime.split('/')[1]
-						}
+						},
+						comment:textArea
 					}
 				}))
 				cleanData()
@@ -89,9 +93,19 @@ const App = () => {
 					<DateElement date={!!date} onDate={setDate}/>
 				</Box>
 			</fieldset>
+			<Textarea
+				placeholder="Введите ваш комментарий…"
+				minRows={3}
+				maxRows={3}
+				value={textArea}
+				onChange={(e)=> {
+					setTextArea(e.target.value)
+				}}
+			/>
 			<Buttons onPress={onActiveButton}/>
 		</form>
 	);
+	//todo add alert
 };
 
 export default App;
